@@ -36,15 +36,18 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         titles = getResources().getStringArray(R.array.titles);
         drawerList = (ListView)findViewById(R.id.drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         //Populate the ListView
         drawerList.setAdapter(new ArrayAdapter<String>(this,
                                                        android.R.layout.simple_list_item_activated_1, titles));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
         //Display the correct fragment.
         if (savedInstanceState != null) {
+            // screen rotated, fragment exists. make title match the fragment
             currentPosition = savedInstanceState.getInt("position");
             setActionBarTitle(currentPosition);
         } else {
@@ -66,7 +69,9 @@ public class MainActivity extends Activity {
                     invalidateOptionsMenu();
                 }
             };
+
         drawerLayout.setDrawerListener(drawerToggle);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
         getFragmentManager().addOnBackStackChangedListener(
@@ -111,6 +116,8 @@ public class MainActivity extends Activity {
             fragment = new TopFragment();
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
+        // replace fragment and tag it as visible
+        // will trigger BackStackChangedListener
         ft.replace(R.id.content_frame, fragment, "visible_fragment");
         ft.addToBackStack(null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
